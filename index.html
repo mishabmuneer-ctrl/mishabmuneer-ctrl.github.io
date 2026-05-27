@@ -63,7 +63,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            max-width: 460px; /* Perfectly sized to fit your dual-tone headline beautifully */
+            max-width: 650px; /* Expanded layout boundary to perfectly hold the single-line headline */
             width: 100%;
             animation: fadeInUp 0.8s ease-out;
         }
@@ -79,10 +79,10 @@
             }
         }
 
-        /* 🔳 RECTANGULAR LOGO CONFIGURATION (642x321 optimized) */
+        /* 🔳 RECTANGULAR LOGO CONFIGURATION (642x321 optimized & Zoomed In) */
         .logo-wrapper {
             width: 100%;
-            max-width: 320px; /* Refined desktop width for clear landscape presentation */
+            max-width: 420px; /* Zoomed in for bold screen presence and brand impact */
             aspect-ratio: 642 / 321; /* Keeps your 2:1 rectangle perfectly proportioned */
             margin-bottom: 36px;
             display: flex;
@@ -115,7 +115,7 @@
             letter-spacing: -0.02em;
             color: #4f3535; /* Custom deep dark muted earth tone */
             margin-bottom: 16px;
-            line-height: 1.35;
+            white-space: nowrap; /* Forces the entire headline onto a single elegant line */
         }
 
         p {
@@ -135,14 +135,16 @@
         /* 📱 MOBILE RESPONSIVE TWEAKS */
         @media (max-width: 768px) {
             .logo-wrapper {
-                max-width: 240px; /* Scaled down clean for mobile layouts */
+                max-width: 300px; /* Zoomed in proportionally for mobile viewports */
                 margin-bottom: 28px;
             }
             h1 {
-                font-size: 1.55rem;
+                font-size: 1.15rem; /* Scaled down perfectly to prevent text wrapping on smaller devices */
+                letter-spacing: -0.01em;
             }
             p {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                max-width: 290px;
             }
         }
     </style>
@@ -157,10 +159,10 @@
         <div class="status-badge">Under Construction</div>
         
         <div class="logo-wrapper">
-            <img src="planyet-logosquare" alt="Planyet Logo" width="642" height="321">
+            <img src="planyet-logo.png" alt="Planyet Logo" width="642" height="321">
         </div>
 
-        <h1>You have a <span class="brand-highlight">Plan</span>. <span class="brand-highlight">Yet</span>, the best is unwritten.</h1>
+        <h1>You have a <span class="brand-highlight">Plan</span> <span class="brand-highlight">Yet</span>, the best is unwritten.</h1>
         <p>We’re reimagining the blank space between them. Hold tight.</p>
     </div>
 

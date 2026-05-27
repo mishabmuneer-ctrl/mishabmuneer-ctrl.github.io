@@ -67,10 +67,22 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            max-width: 700px; /* Expanded layout boundary to perfectly hold single-line text elements */
+            max-width: 700px; /* Expanded layout boundary to hold single-line elements */
             width: 100%;
-            animation: fadeInUp 0.8s ease-out;
             margin-top: -12vh; /* Shifts layout upward to balance vertical space */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* State style rules for smooth transition switching */
+        .view-hidden {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .view-visible {
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.8s ease-out;
         }
 
         @keyframes fadeInUp {
@@ -127,8 +139,8 @@
             color: #4f3535; /* Matching custom muted base tone */
             opacity: 0.9;
             line-height: 1.6;
-            max-width: 100%; /* Removes previous restrictions to allow full width display */
-            white-space: nowrap; /* Forces the body text onto a single elegant line on desktop screens */
+            max-width: 100%; 
+            white-space: nowrap; /* Forces the body text onto a single line on desktop */
         }
 
         /* Inline brand highlighting style rules */
@@ -137,7 +149,7 @@
             color: #f9363B;   /* Vibrant brand red color */
         }
 
-        /* 🔘 BOTTOM RIGHT FLOATING BUTTON */
+        /* 🔘 BOTTOM RIGHT FLOATING ACTION BUTTON */
         .floating-btn {
             position: fixed;
             bottom: 32px;
@@ -149,7 +161,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            text-decoration: none;
+            cursor: pointer;
+            border: none;
             color: #475569;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -160,7 +173,7 @@
         .floating-btn svg {
             width: 20px;
             height: 20px;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* Loving & playful interaction states */
@@ -169,14 +182,15 @@
             transform: translateY(-4px);
         }
 
-        .floating-btn:hover svg {
-            transform: translateX(2px) rotate(-45deg);
+        /* Custom dynamic style indicator rule handled by JavaScript toggle state */
+        .is-reversed svg {
+            transform: rotate(180deg);
         }
 
         /* 📱 MOBILE RESPONSIVE TWEAKS */
         @media (max-width: 768px) {
             .container {
-                margin-top: -8vh; /* Adjusted vertical pull specifically for mobile viewport sizing */
+                margin-top: -8vh; /* Adjusted vertical pull for mobile viewport sizing */
             }
             .logo-wrapper {
                 max-width: 300px; /* Zoomed in proportionally for mobile viewports */
@@ -207,29 +221,69 @@
         <div class="spinner"></div>
     </div>
 
-    <div class="container">
+    <div id="main-container" class="container view-visible">
         <div class="status-badge">THE <span style="color: #f9363B; font-weight: 700;">PLAN</span> IS LOADING...</div>
         
         <div class="logo-wrapper">
-            <img src="planyet-flogo19971075" alt="Planyet Logo" width="642" height="321">
+            <img id="brand-logo" src="planyet-flogo19971075" alt="Planyet Logo" width="642" height="321">
         </div>
 
         <h1>You have a <span class="brand-highlight">Plan</span><span class="brand-highlight">Yet</span> the best is unwritten.</h1>
         <p>Helping you make every single moment truly memorable.</p>
     </div>
 
-    <a href="duplicate.html" class="floating-btn" aria-label="View Duplicate Page">
+    <button id="toggle-btn" class="floating-btn" aria-label="Switch Layout View">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
         </svg>
-    </a>
+    </button>
 
     <script>
+        const loaderWrapper = document.getElementById('loader-wrapper');
+        const mainContainer = document.getElementById('main-container');
+        const brandLogo = document.getElementById('brand-logo');
+        const toggleBtn = document.getElementById('toggle-btn');
+
+        // Assets dictionary for tracking views
+        const views = {
+            page1: "planyet-flogo19971075",
+            page2: "planyet-logo642321"
+        };
+        
+        let currentView = "page1";
+
+        // Initial landing site fade out for the global loader
         window.addEventListener('load', function() {
-            const loader = document.getElementById('loader-wrapper');
             setTimeout(() => {
-                loader.classList.add('fade-out');
+                loaderWrapper.classList.add('fade-out');
             }, 350);
+        });
+
+        // Click interaction handler for switching layouts
+        toggleBtn.addEventListener('click', function() {
+            // 1. Bring back the loading screen overlay smoothly
+            loaderWrapper.classList.remove('fade-out');
+            mainContainer.classList.add('view-hidden');
+
+            setTimeout(() => {
+                // 2. Perform the assets swap behind the curtain
+                if (currentView === "page1") {
+                    brandLogo.src = views.page2;
+                    toggleBtn.classList.add('is-reversed');
+                    currentView = "page2";
+                } else {
+                    brandLogo.src = views.page1;
+                    toggleBtn.classList.remove('is-reversed');
+                    currentView = "page1";
+                }
+
+                // 3. Drop down the loading shield and fade content back into place cleanly
+                setTimeout(() => {
+                    loaderWrapper.classList.add('fade-out');
+                    mainContainer.classList.remove('view-hidden');
+                }, 350);
+
+            }, 400); // Gives time for initial fade out transition logic to look consistent
         });
     </script>
 

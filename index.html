@@ -5,40 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planyet</title>
     <style>
+        /* Base setup for the dark background */
         body {
             margin: 0;
             padding: 0;
-            background-color: #0f172a; /* Sleek, dark modern background */
+            background-color: #0f172a; 
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
-        .container {
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
         }
-        video {
-            max-width: 100%;
-            max-height: 90vh;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+        /* 💻 LAPTOP/DESKTOP STYLING */
+        @media (min-width: 769px) {
+            video {
+                /* OPTION 1 (Full-Screen): Uncomment the 3 lines below to make it stretch edge-to-edge */
+                /* width: 100%; */
+                /* height: 100%; */
+                /* object-fit: cover; */
+
+                /* OPTION 2 (Contained with shadow): Default clean look */
+                max-width: 90%;
+                max-height: 85vh;
+                object-fit: contain;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        /* 📱 MOBILE STYLING (Flips instantly for screens smaller than 768px) */
+        @media (max-width: 768px) {
+            video {
+                /* OPTION 1 (Full-Screen Mobile): Fills the whole phone screen edge-to-edge */
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 0px;
+                box-shadow: none;
+
+                /* OPTION 2 Alternative: If your video has text and cannot be cropped, comment out the 4 lines above and use these instead: */
+                /* max-width: 95%; */
+                /* max-height: 90vh; */
+                /* object-fit: contain; */
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <div class="video-container">
         <video autoplay loop muted playsinline>
             <source src="planyet-loadingblack.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
+
 </body>
 </html>

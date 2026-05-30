@@ -579,10 +579,10 @@ function submit(){
   const exp=document.getElementById('ddLabel').textContent;
 
   document.getElementById('nameIn').style.borderColor=name?'':'#E8473F';
-  document.getElementById('phoneIn').style.borderColor=phone?'':'#E8473F';
+  document.getElementById('phoneIn').style.borderColor=(phone.length===10&&/^\d+$/.test(phone))?'':'#E8473F';
   document.getElementById('ddBtn').style.borderColor=(exp==='Select an experience')?'#E8473F':'';
 
-  if(!name||!phone||exp==='Select an experience') return;
+  if(!name||phone.length!==10||!/^\d+$/.test(phone)||exp==='Select an experience') return;
 
   // Show loading state
   const btn = document.querySelector('.submit-btn');

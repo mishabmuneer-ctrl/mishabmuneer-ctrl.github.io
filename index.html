@@ -572,7 +572,7 @@ function pickOpt(el,val){
   document.getElementById('ddMenu').classList.remove('open');
 }
 
-async function submit(){
+function submit(){
   const name=document.getElementById('nameIn').value.trim();
   const phone=document.getElementById('phoneIn').value.trim();
   const exp=document.getElementById('ddLabel').textContent;
@@ -585,29 +585,50 @@ async function submit(){
 
   // Show loading state
   const btn = document.querySelector('.submit-btn');
-  btn.textContent = 'Sending...';
+  btn.innerHTML = 'Sending...';
   btn.style.opacity = '0.7';
   btn.disabled = true;
 
-  try {
-    await fetch('https://script.google.com/macros/s/AKfycby8TRo7eLrbEsEgT38kvEGnLqT_msSbihhhXK73kqV8HLJH6IPfDLN1cxq2a8nszdFE/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        name: name,
-        mobile: phone,
-        experience: exp
-      })
-    });
-  } catch(err) {
-    console.log('Submission error:', err);
-  }
+  // Use a hidden iframe + form to bypass CORS — most reliable method for Google Apps Script
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8TRo7eLrbEsEgT38kvEGnLqT_msSbihhhXK73kqV8HLJH6IPfDLN1cxq2a8nszdFE/exec';
 
-  // Show success regardless (no-cors means we can't read response)
-  document.getElementById('formCard').style.display='none';
-  const s=document.getElementById('successCard');
-  s.style.display='flex';
+  // Create hidden iframe
+  const iframe = document.createElement('iframe');
+  iframe.name = 'hidden_iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+
+  // Create hidden form
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = SCRIPT_URL;
+  form.target = 'hidden_iframe';
+
+  // Add fields
+  const fields = { name: name, mobile: phone, experience: exp };
+  Object.keys(fields).forEach(key => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = fields[key];
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+
+  // Clean up after submission
+  setTimeout(() => {
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+  }, 3000);
+
+  // Show success screen
+  setTimeout(() => {
+    document.getElementById('formCard').style.display='none';
+    const s=document.getElementById('successCard');
+    s.style.display='flex';
+  }, 800);
 }
 </script>
 </body>

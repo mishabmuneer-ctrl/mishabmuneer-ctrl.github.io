@@ -200,6 +200,7 @@
   color: var(--ink-muted);
 }
 
+
 /* ============================================================
    PLANYET — Landing page styles
    Direction: "Poster" — Oswald uppercase + Hanken Grotesk
@@ -274,7 +275,7 @@ img{display:block}
 }
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
 .nav.scrolled{background:rgba(245,241,230,.86);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
-.nav-logo{height:30px;width:auto}
+.nav-logo{height:50px;width:auto}
 .nav-links{display:flex;align-items:center;gap:34px}
 .nav-links a{font-size:14px;font-weight:var(--w-med);color:var(--ink-mid);letter-spacing:.01em;transition:color var(--dur) var(--ease)}
 .nav-links a:hover{color:var(--red)}
@@ -465,7 +466,7 @@ img{display:block}
    ============================================================ */
 .footer{background:var(--ink);color:#fff;padding:clamp(54px,7vw,84px) 0 40px}
 .footer-top{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.12)}
-.footer-logo{height:34px;width:auto;filter:brightness(0) invert(1);margin-bottom:18px}
+.footer-logo{height:50px;width:auto;filter:brightness(0) invert(1);margin-bottom:18px}
 .footer-tag{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,3.4vw,46px);line-height:1;letter-spacing:.01em;max-width:14ch}
 .footer-tag .hot{color:var(--red)}
 .footer-links{display:flex;gap:48px;flex-wrap:wrap}
@@ -546,7 +547,6 @@ function scrollToId(id) {
 }
 
 Object.assign(window, { ArrowIcon, ChevronIcon, CheckIcon, useReveal, scrollToId });
-
 </script>
 
 <script type="text/babel">
@@ -579,7 +579,6 @@ function Nav() {
   );
 }
 Object.assign(window, { Nav });
-
 </script>
 
 <script type="text/babel">
@@ -648,7 +647,6 @@ function Hero({ t }) {
   );
 }
 Object.assign(window, { Hero });
-
 </script>
 
 <script type="text/babel">
@@ -685,7 +683,6 @@ function Process() {
   );
 }
 Object.assign(window, { Process });
-
 </script>
 
 <script type="text/babel">
@@ -721,7 +718,6 @@ function About() {
   );
 }
 Object.assign(window, { About });
-
 </script>
 
 <script type="text/babel">
@@ -763,7 +759,6 @@ function Dropdown({ value, onChange, error }) {
   );
 }
 Object.assign(window, { Dropdown });
-
 </script>
 
 <script type="text/babel">
@@ -840,7 +835,6 @@ function Enquiry() {
   );
 }
 Object.assign(window, { Enquiry });
-
 </script>
 
 <script type="text/babel">
@@ -877,32 +871,31 @@ function Footer() {
   );
 }
 Object.assign(window, { Footer });
-
 </script>
 
 <script type="text/babel">
-  const T = {
-    heroTheme: 'cream',
-    heroEyebrow: 'Experience Design Co.',
-    heroLine: 'Some moments deserve',
-    heroHot: 'more than a memory.',
-    heroSub: "We step in before the moment happens, so all you have to do is feel it.",
-    heroCta: 'Make your moment happen'
-  };
-  function App() {
-    useReveal();
-    return (
-      <React.Fragment>
-        <Nav />
-        <Hero t={T} />
-        <Process />
-        <About />
-        <Enquiry />
-        <Footer />
-      </React.Fragment>
-    );
-  }
-  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+const T = {
+  "heroTheme": "cream",
+  "heroEyebrow": "Experience Design Co.",
+  "heroLine": "Some moments deserve",
+  "heroHot": "more than a memory.",
+  "heroSub": "We step in before the moment happens, so all you have to do is feel it.",
+  "heroCta": "Make your moment happen"
+};
+function App() {
+  useReveal();
+  return (
+    <React.Fragment>
+      <Nav />
+      <Hero t={T} />
+      <Process />
+      <About />
+      <Enquiry />
+      <Footer />
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>
 </html>

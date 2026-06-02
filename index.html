@@ -273,11 +273,11 @@ img{display:block}
   transition:background var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease);
   border-bottom:1px solid transparent;
 }
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:84px}
 .nav.scrolled{background:rgba(245,241,230,.86);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
-.nav-logo{width:120px;height:auto;max-height:56px;object-fit:contain}
-.nav-links{display:flex;align-items:center;gap:34px}
-.nav-links a{font-size:14px;font-weight:var(--w-med);color:var(--ink-mid);letter-spacing:.01em;transition:color var(--dur) var(--ease)}
+.nav-logo{width:180px;height:auto;max-height:64px;object-fit:contain}
+.nav-links{display:flex;align-items:center;gap:34px;margin-left:auto;margin-right:32px}
+.nav-links a{font-size:14px;font-weight:var(--w-med);color:var(--ink-mid);letter-spacing:.01em;white-space:nowrap;transition:color var(--dur) var(--ease)}
 .nav-links a:hover{color:var(--red)}
 .nav-cta{padding:10px 20px;font-size:14px}
 .nav-menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--ink)}
@@ -397,21 +397,21 @@ img{display:block}
 .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(32px,6vw,90px);align-items:start;border-top:1px solid rgba(255,255,255,.22);padding-top:48px}
 .about-grid p{font-size:var(--fs-body-lg);line-height:1.8;color:rgba(255,255,255,.82);font-weight:var(--w-light);max-width:46ch}
 .about-grid p + p{margin-top:20px}
-.about-what .pl-label{color:rgba(255,255,255,.6);display:block;margin-bottom:24px;letter-spacing:var(--track-eyebrow)}
-.what-groups{display:grid;grid-template-columns:1fr 1fr;gap:32px 40px}
-.what-group{display:flex;flex-direction:column;gap:12px}
-.what-cat{font-family:var(--sans);font-weight:var(--w-med);font-size:11px;text-transform:uppercase;letter-spacing:var(--track-eyebrow);color:var(--cream);opacity:.85}
-.what-list{display:flex;flex-direction:column;gap:2px}
-.what-list li{
-  list-style:none;font-family:var(--display);font-weight:700;text-transform:uppercase;
-  font-size:clamp(16px,1.5vw,21px);letter-spacing:.01em;color:rgba(255,255,255,.92);
-  padding:13px 0;border-bottom:1px solid rgba(255,255,255,.16);
-  display:flex;align-items:center;gap:14px;transition:padding-left var(--dur) var(--ease),color var(--dur) var(--ease);
+.about-what .pl-label{color:rgba(255,255,255,.6);display:block;margin-bottom:20px;letter-spacing:var(--track-eyebrow)}
+.what-index{display:flex;flex-direction:column}
+.what-row{
+  display:grid;grid-template-columns:130px 1fr;gap:28px;align-items:baseline;
+  padding:18px 0;border-top:1px solid rgba(255,255,255,.16);
 }
-.what-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cream);flex-shrink:0;opacity:.6}
-.what-list li:hover{padding-left:8px;color:var(--cream)}
-@media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:44px}.what-groups{gap:28px 32px}}
-@media(max-width:420px){.what-groups{grid-template-columns:1fr}}
+.what-row:last-child{border-bottom:1px solid rgba(255,255,255,.16)}
+.what-cat{font-family:var(--sans);font-weight:var(--w-med);font-size:11px;text-transform:uppercase;letter-spacing:var(--track-eyebrow);color:var(--cream);opacity:.7;padding-top:3px}
+.what-items{
+  font-family:var(--display);font-style:italic;font-weight:400;
+  font-size:clamp(19px,1.9vw,26px);line-height:1.3;letter-spacing:.005em;
+  color:rgba(255,255,255,.94);max-width:34ch;
+}
+@media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:44px}}
+@media(max-width:520px){.what-row{grid-template-columns:1fr;gap:6px}.what-cat{padding-top:0}}
 
 /* ============================================================
    ENQUIRY (contact split)
@@ -714,14 +714,12 @@ function About() {
             <p>We believe some moments deserve more than just being scheduled. So we step in before they happen, carry the planning, and leave you free to simply feel it.</p>
           </div>
           <div className="about-what reveal">
-            <span className="pl-label">What we plan</span>
-            <div className="what-groups">
+            <span className="pl-label">Experiences we craft</span>
+            <div className="what-index">
               {WHAT_WE_PLAN.map(g => (
-                <div className="what-group" key={g.cat}>
+                <div className="what-row" key={g.cat}>
                   <span className="what-cat">{g.cat}</span>
-                  <ul className="what-list">
-                    {g.items.map(w => <li key={w}>{w}</li>)}
-                  </ul>
+                  <p className="what-items">{g.items.join('  ·  ')}</p>
                 </div>
               ))}
             </div>
@@ -806,7 +804,7 @@ function Enquiry() {
             <p>Tell us what you're dreaming of. We'll handle everything from there.</p>
             <div className="enq-left-foot">
               <a href="mailto:mail@planyet.in">mail@planyet.in</a>
-              <a href="https://www.instagram.com/plan.yet" target="_blank" rel="noopener">Instagram · @plan.yet</a>
+              <a href="https://www.instagram.com/planyet.in/" target="_blank" rel="noopener">Instagram · @planyet.in</a>
             </div>
           </div>
 
@@ -874,7 +872,7 @@ function Footer() {
             <div className="footer-col">
               <span className="pl-label">Connect</span>
               <a href="mailto:mail@planyet.in">mail@planyet.in</a>
-              <a href="https://www.instagram.com/plan.yet" target="_blank" rel="noopener">Instagram</a>
+              <a href="https://www.instagram.com/planyet.in/" target="_blank" rel="noopener">Instagram</a>
             </div>
           </div>
         </div>

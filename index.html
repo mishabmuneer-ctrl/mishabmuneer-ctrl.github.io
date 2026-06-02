@@ -275,7 +275,7 @@ img{display:block}
 }
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
 .nav.scrolled{background:rgba(245,241,230,.86);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
-.nav-logo{height:50px;width:auto}
+.nav-logo{width:120px;height:auto;max-height:56px;object-fit:contain}
 .nav-links{display:flex;align-items:center;gap:34px}
 .nav-links a{font-size:14px;font-weight:var(--w-med);color:var(--ink-mid);letter-spacing:.01em;transition:color var(--dur) var(--ease)}
 .nav-links a:hover{color:var(--red)}
@@ -397,17 +397,21 @@ img{display:block}
 .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(32px,6vw,90px);align-items:start;border-top:1px solid rgba(255,255,255,.22);padding-top:48px}
 .about-grid p{font-size:var(--fs-body-lg);line-height:1.8;color:rgba(255,255,255,.82);font-weight:var(--w-light);max-width:46ch}
 .about-grid p + p{margin-top:20px}
-.about-what .pl-label{color:rgba(255,255,255,.6);display:block;margin-bottom:18px;letter-spacing:var(--track-eyebrow)}
-.what-list{display:flex;flex-direction:column}
+.about-what .pl-label{color:rgba(255,255,255,.6);display:block;margin-bottom:24px;letter-spacing:var(--track-eyebrow)}
+.what-groups{display:grid;grid-template-columns:1fr 1fr;gap:32px 40px}
+.what-group{display:flex;flex-direction:column;gap:12px}
+.what-cat{font-family:var(--sans);font-weight:var(--w-med);font-size:11px;text-transform:uppercase;letter-spacing:var(--track-eyebrow);color:var(--cream);opacity:.85}
+.what-list{display:flex;flex-direction:column;gap:2px}
 .what-list li{
   list-style:none;font-family:var(--display);font-weight:700;text-transform:uppercase;
-  font-size:clamp(18px,2vw,26px);letter-spacing:.01em;color:#fff;
+  font-size:clamp(16px,1.5vw,21px);letter-spacing:.01em;color:rgba(255,255,255,.92);
   padding:13px 0;border-bottom:1px solid rgba(255,255,255,.16);
   display:flex;align-items:center;gap:14px;transition:padding-left var(--dur) var(--ease),color var(--dur) var(--ease);
 }
-.what-list li::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cream);flex-shrink:0;opacity:.7}
+.what-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cream);flex-shrink:0;opacity:.6}
 .what-list li:hover{padding-left:8px;color:var(--cream)}
-@media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:44px}}
+@media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:44px}.what-groups{gap:28px 32px}}
+@media(max-width:420px){.what-groups{grid-template-columns:1fr}}
 
 /* ============================================================
    ENQUIRY (contact split)
@@ -585,7 +589,9 @@ Object.assign(window, { Nav });
 /* Planyet — hero (poster headline + experience marquee). Theme & copy driven by tweaks. */
 const EXPERIENCES = [
   'Romantic Dates', 'Proposals', 'Anniversaries', 'Birthdays',
-  'Bachelor Parties', 'Friends Get-Togethers', 'Corporate Events'
+  'Bachelor Parties', 'Friends Get-Togethers', 'Corporate Events',
+  'Festive Celebrations', 'Staycations', 'Weekend Getaways',
+  'Destination Events', 'Strangers Meetups & Camping'
 ];
 
 function Marquee() {
@@ -603,7 +609,7 @@ function Hero({ t }) {
   const theme = t.heroTheme || 'cream';
   const headline = (
     <h1 className="poster hero-title">
-      {t.heroLine}{' '}<span className="hot">{t.heroHot}</span>
+      {t.heroLine}{' '}<span className="hot">{t.heroHot}</span>{t.heroTail ? <React.Fragment>{' '}{t.heroTail}</React.Fragment> : null}
     </h1>
   );
 
@@ -688,9 +694,10 @@ Object.assign(window, { Process });
 <script type="text/babel">
 /* Planyet — About the studio (red full-bleed statement) */
 const WHAT_WE_PLAN = [
-  'Romantic Dates', 'Proposal Setups', 'Anniversary Celebrations',
-  'Birthday Celebrations', 'Bachelor / Bachelorette Parties',
-  'Friends Get-Togethers', 'Corporate Events',
+  { cat: 'Romance',      items: ['Romantic Dates', 'Proposal Setups', 'Anniversaries'] },
+  { cat: 'Celebrations', items: ['Birthday Celebrations', 'Festive Celebrations', 'Bachelor / Bachelorette'] },
+  { cat: 'Getaways',     items: ['Staycations', 'Weekend Getaways', 'Strangers Meetups & Camping'] },
+  { cat: 'Gatherings',   items: ['Friends Get-Togethers', 'Destination Events', 'Corporate Events'] },
 ];
 
 function About() {
@@ -708,9 +715,16 @@ function About() {
           </div>
           <div className="about-what reveal">
             <span className="pl-label">What we plan</span>
-            <ul className="what-list">
-              {WHAT_WE_PLAN.map(w => <li key={w}>{w}</li>)}
-            </ul>
+            <div className="what-groups">
+              {WHAT_WE_PLAN.map(g => (
+                <div className="what-group" key={g.cat}>
+                  <span className="what-cat">{g.cat}</span>
+                  <ul className="what-list">
+                    {g.items.map(w => <li key={w}>{w}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -728,7 +742,9 @@ function Dropdown({ value, onChange, error }) {
   const options = [
     'Romantic date', 'Anniversary celebration', 'Proposal setup',
     'Bachelor / bachelorette party', 'Birthday celebration',
-    'Friends get-together', 'Corporate event', 'Other'
+    'Festive celebration', 'Friends get-together', 'Corporate event',
+    'Destination event', 'Staycation', 'Weekend getaway',
+    'Strangers meetup / camping', 'Other'
   ];
   React.useEffect(() => {
     function onDoc(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
@@ -877,8 +893,9 @@ Object.assign(window, { Footer });
 const T = {
   "heroTheme": "cream",
   "heroEyebrow": "Experience Design Co.",
-  "heroLine": "Some moments deserve",
-  "heroHot": "more than a memory.",
+  "heroLine": "You have a",
+  "heroHot": "Planyet",
+  "heroTail": "the best is unwritten.",
   "heroSub": "We step in before the moment happens, so all you have to do is feel it.",
   "heroCta": "Make your moment happen"
 };

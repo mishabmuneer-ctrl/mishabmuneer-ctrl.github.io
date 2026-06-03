@@ -498,6 +498,7 @@ img{display:block}
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
 
 <script type="text/babel">
 /* Planyet — shared icons */
@@ -703,7 +704,26 @@ const WHAT_WE_PLAN = [
   { cat: 'Gatherings',   items: ['Friends Get-Togethers', 'Destination Events', 'Corporate Events'] },
 ];
 
-function About() {
+function About({ tw }) {
+  // Build the "Experiences we craft" rows from tweaks (falls back to defaults).
+  const t = tw || {};
+  const sep = t.expSeparator || '  ·  ';
+  const rows = [
+    { cat: t.expCat1, items: t.expItems1 },
+    { cat: t.expCat2, items: t.expItems2 },
+    { cat: t.expCat3, items: t.expItems3 },
+    { cat: t.expCat4, items: t.expItems4 },
+  ]
+    .filter(r => r.cat && r.cat.trim())
+    .map(r => ({
+      cat: r.cat.trim(),
+      items: (r.items || '').split(',').map(s => s.trim()).filter(Boolean).join(sep),
+    }));
+  const fallback = WHAT_WE_PLAN.map(g => ({ cat: g.cat, items: g.items.join('  ·  ') }));
+  const list = rows.length ? rows : fallback;
+  const label = t.expLabel || 'Experiences we craft';
+  const showExp = t.expShow !== false;
+
   return (
     <section className="about" id="about">
       <div className="wrap">
@@ -716,17 +736,19 @@ function About() {
             <p>Planyet plans and executes curated real-world experiences — thoughtfully designed, quietly executed, entirely yours. We work in the space between an idea and a memory, turning what you picture in your head into something real.</p>
             <p>We believe some moments deserve more than just being scheduled. So we step in before they happen, carry the planning, and leave you free to simply feel it.</p>
           </div>
-          <div className="about-what reveal">
-            <span className="pl-label">Experiences we craft</span>
-            <div className="what-index">
-              {WHAT_WE_PLAN.map(g => (
-                <div className="what-row" key={g.cat}>
-                  <span className="what-cat">{g.cat}</span>
-                  <p className="what-items">{g.items.join('  ·  ')}</p>
-                </div>
-              ))}
+          {showExp && (
+            <div className="about-what reveal">
+              <span className="pl-label">{label}</span>
+              <div className="what-index">
+                {list.map((g, i) => (
+                  <div className="what-row" key={g.cat + i}>
+                    <span className="what-cat">{g.cat}</span>
+                    <p className="what-items">{g.items}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
@@ -779,6 +801,17 @@ Object.assign(window, { Dropdown });
 </script>
 
 <script type="text/babel">
+/* ============================================================
+   ENQUIRY ENDPOINT — paste your Google Apps Script Web App URL here.
+   It must end in /exec (NOT /dev). Until this is filled in, the form
+   will show an error instead of pretending the enquiry was saved.
+
+   Setup: Google Sheet → Extensions → Apps Script → paste the doPost()
+   function → Deploy → New deployment → Web app → Execute as "Me",
+   Who has access "Anyone" → copy the /exec URL into the line below.
+   ============================================================ */
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycby8TRo7eLrbEsEgT38kvEGnLqT_msSbihhhXK73kqV8HLJH6IPfDLN1cxq2a8nszdFE/exec';
+
 /* Planyet — Enquiry (contact split card) with validation + success */
 function Enquiry() {
   const [name, setName] = React.useState('');
@@ -787,13 +820,33 @@ function Enquiry() {
   const [sent, setSent] = React.useState(false);
   const [sending, setSending] = React.useState(false);
   const [err, setErr] = React.useState({});
+  const [sendError, setSendError] = React.useState('');
 
-  function submit() {
+  async function submit() {
     const e = { name: !name.trim(), phone: !(phone.length === 10 && /^\d+$/.test(phone)), exp: !exp };
     setErr(e);
     if (e.name || e.phone || e.exp) return;
+
+    if (!SHEET_ENDPOINT) {
+      setSendError('The enquiry form isn’t connected yet. Please reach us at mail@planyet.in.');
+      return;
+    }
+
     setSending(true);
-    setTimeout(() => { setSending(false); setSent(true); }, 800);
+    setSendError('');
+    try {
+      await fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ name: name.trim(), mobile: phone, experience: exp }),
+      });
+      setSending(false);
+      setSent(true);
+    } catch (err) {
+      setSending(false);
+      setSendError('Something went wrong sending your enquiry. Please try again, or email mail@planyet.in.');
+    }
   }
 
   return (
@@ -836,7 +889,9 @@ function Enquiry() {
                         style={{ opacity: sending ? 0.7 : 1 }}>
                   {sending ? 'Sending…' : <React.Fragment>Send enquiry <ArrowIcon className="pl-submit-arrow" /></React.Fragment>}
                 </button>
-                <p className="pl-form-note">We usually reply within a day. No spam, ever.</p>
+                {sendError
+                  ? <p className="pl-form-note" style={{ color: 'var(--red)' }}>{sendError}</p>
+                  : <p className="pl-form-note">We usually reply within a day. No spam, ever.</p>}
               </React.Fragment>
             ) : (
               <div className="pl-success">
@@ -900,16 +955,66 @@ const T = {
   "heroSub": "We step in before the moment happens, so all you have to do is feel it.",
   "heroCta": "Make your moment happen"
 };
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "expShow": true,
+  "expLabel": "Experiences we craft",
+  "expSeparator": "  ·  ",
+  "expCat1": "Romance",
+  "expItems1": "Romantic Dates, Proposal Setups, Anniversaries",
+  "expCat2": "Celebrations",
+  "expItems2": "Birthday Celebrations, Festive Celebrations, Bachelor / Bachelorette",
+  "expCat3": "Getaways",
+  "expItems3": "Staycations, Weekend Getaways, Strangers Meetups & Camping",
+  "expCat4": "Gatherings",
+  "expItems4": "Friends Get-Togethers, Destination Events, Corporate Events"
+}/*EDITMODE-END*/;
+
 function App() {
   useReveal();
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   return (
     <React.Fragment>
       <Nav />
       <Hero t={T} />
       <Process />
-      <About />
+      <About tw={t} />
       <Enquiry />
       <Footer />
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Experiences we craft" />
+        <TweakToggle label="Show section" value={t.expShow}
+                     onChange={(v) => setTweak('expShow', v)} />
+        <TweakText label="Heading" value={t.expLabel}
+                   onChange={(v) => setTweak('expLabel', v)} />
+        <TweakRadio label="Separator" value={t.expSeparator}
+                    options={["  ·  ", "  —  ", "  /  ", "  •  "]}
+                    onChange={(v) => setTweak('expSeparator', v)} />
+
+        <TweakSection label="Category 1" />
+        <TweakText label="Name" value={t.expCat1}
+                   onChange={(v) => setTweak('expCat1', v)} />
+        <TweakText label="Items (comma-separated)" value={t.expItems1}
+                   onChange={(v) => setTweak('expItems1', v)} />
+
+        <TweakSection label="Category 2" />
+        <TweakText label="Name" value={t.expCat2}
+                   onChange={(v) => setTweak('expCat2', v)} />
+        <TweakText label="Items (comma-separated)" value={t.expItems2}
+                   onChange={(v) => setTweak('expItems2', v)} />
+
+        <TweakSection label="Category 3" />
+        <TweakText label="Name" value={t.expCat3}
+                   onChange={(v) => setTweak('expCat3', v)} />
+        <TweakText label="Items (comma-separated)" value={t.expItems3}
+                   onChange={(v) => setTweak('expItems3', v)} />
+
+        <TweakSection label="Category 4" />
+        <TweakText label="Name" value={t.expCat4}
+                   onChange={(v) => setTweak('expCat4', v)} />
+        <TweakText label="Items (comma-separated)" value={t.expItems4}
+                   onChange={(v) => setTweak('expItems4', v)} />
+      </TweaksPanel>
     </React.Fragment>
   );
 }

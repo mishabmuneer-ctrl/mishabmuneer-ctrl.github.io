@@ -13,7 +13,7 @@
    ============================================================ */
 const CONFIG = {
   endpoint: 'https://script.google.com/macros/s/AKfycby8TRo7eLrbEsEgT38kvEGnLqT_msSbihhhXK73kqV8HLJH6IPfDLN1cxq2a8nszdFE/exec',  // same Google Sheet web app as the website form
-  team: ['Mishab', 'Aysha', 'Rahul'], // fallback only; the live list comes from the restricted "Team" sheet
+  team: ['Mishab', 'Bezeem', 'Irfan','Rohan'], // fallback only; the live list comes from the restricted "Team" sheet
   currency: '₹',
 };
 
